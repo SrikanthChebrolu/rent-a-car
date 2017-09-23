@@ -1,0 +1,144 @@
+:::::::::::::::::::::::::Insert:::::::::::::::::::::::
+
+
+-- Table: "CarDetails"
+
+-- DROP TABLE "CarDetails";
+
+CREATE TABLE "CarDetails"
+(
+  car_name character varying,
+  car_type character varying,
+  location_id integer,
+  car_year integer,
+  "car_imageUrl" character varying,
+  car_price integer,
+  car_id character varying NOT NULL,
+  CONSTRAINT pk_carid PRIMARY KEY (car_id),
+  CONSTRAINT fk_carid FOREIGN KEY (car_id)
+      REFERENCES "CarDetails" (car_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE "CarDetails"
+  OWNER TO dbuser;
+COMMENT ON TABLE "CarDetails"
+  IS 'Details about the car';
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+-- Table: booking_details
+
+-- DROP TABLE booking_details;
+
+CREATE TABLE booking_details
+(
+  booking_id character varying NOT NULL,
+  user_id character varying,
+  car_id character varying,
+  location_id character varying,
+  booking_date date,
+  from_date date,
+  to_date date,
+  total_cost integer,
+  rental_ext boolean,
+  CONSTRAINT pk_bookingid PRIMARY KEY (booking_id),
+  CONSTRAINT fk_location FOREIGN KEY (location_id)
+      REFERENCES location_details (location_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_userid FOREIGN KEY (user_id)
+      REFERENCES user_details (user_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE booking_details
+  OWNER TO dbuser;
+
+-- Index: fki_location
+
+-- DROP INDEX fki_location;
+
+CREATE INDEX fki_location
+  ON booking_details
+  USING btree
+  (location_id COLLATE pg_catalog."default");
+
+-- Index: fki_userid
+
+-- DROP INDEX fki_userid;
+
+CREATE INDEX fki_userid
+  ON booking_details
+  USING btree
+  (user_id COLLATE pg_catalog."default");
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+-- Table: employee_details
+
+-- DROP TABLE employee_details;
+
+CREATE TABLE employee_details
+(
+  emp_id character varying NOT NULL,
+  emp_name character varying,
+  emp_password character varying,
+  emp_phone character(10),
+  CONSTRAINT pk_empid PRIMARY KEY (emp_id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE employee_details
+  OWNER TO dbuser;
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+-- Table: location_details
+
+-- DROP TABLE location_details;
+
+CREATE TABLE location_details
+(
+  location_id character varying NOT NULL,
+  state character(5),
+  lat real,
+  "long" real,
+  zoom integer,
+  location_name character varying,
+  CONSTRAINT pk_locationid PRIMARY KEY (location_id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE location_details
+  OWNER TO dbuser;
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-- Table: user_details
+
+-- DROP TABLE user_details;
+
+CREATE TABLE user_details
+(
+  user_password character varying,
+  user_id character varying NOT NULL,
+  user_firstname character varying,
+  user_lastname character varying,
+  user_emailid character varying,
+  user_phonenumber character(10),
+  user_city character varying,
+  user_cardno character(16),
+  user_cardexp date,
+  CONSTRAINT pk_userid PRIMARY KEY (user_id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE user_details
+  OWNER TO dbuser;
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
